@@ -1,4 +1,12 @@
-function generateBlogContent(content) {
+// 글감 데이터베이스 (가독성 개선 버전)
+        const topicDatabase = [
+            {
+                title: "🌅 자연광 맛집 선셋라운지 신규 오픈",
+                content: "자연광이 아름답게 들어오는 선셋라운지가 새롭게 문을 열었습니다!\n\n브라이덜샤워부터 소규모 모임까지 완벽한 공간으로, 성인 10명까지 추가비용 없이 이용 가능합니다.\n\n감성 인테리어와 무드조명으로 어떤 컨셉이든 완벽하게 연출할 수 있어요."
+            },
+            {
+                title: "🍷 아늑한 바와 함께하는 브라이덜샤워",
+                content: "예비신부를 위한 완벽한 브라이덜샤워 공간!\n\n아늑한 바에서 와인잔과 함께 특별한 시간을 보내세요.\n\n드레스 대여도 가능하고, 포토후기 작성시 드레스 무료 대여         function generateBlogContent(content) {
             const info = partyRoomInfo;
             
             // 텍스트 가독성 향상을 위한 처리
@@ -378,11 +386,41 @@ function generateBlogContent(content) {
             }, 1500);
         }
         
+        // 어떤 텍스트든 읽기 좋게 자동 변환하는 함수
+        function autoFormatText(text) {
+            return text
+                // 이모지 뒤에 줄바꿈 추가
+                .replace(/🎉/g, '🎉\n\n')
+                .replace(/🎈/g, '🎈\n\n')
+                .replace(/🍽/g, '\n\n🍽')
+                .replace(/💛/g, '💛\n\n')
+                .replace(/🌇/g, '🌇\n\n')
+                .replace(/👗/g, '\n\n👗')
+                
+                // ** 볼드 텍스트 처리
+                .replace(/\*\*(.*?)\*\*/g, '\n\n**$1**\n')
+                
+                // 마침표, 느낌표, 물음표 뒤 줄바꿈
+                .replace(/\! /g, '!\n\n')
+                .replace(/\? /g, '?\n\n')
+                .replace(/\. /g, '.\n\n')
+                
+                // 특정 단어 뒤 줄바꿈
+                .replace(/완비!/g, '완비!\n\n')
+                .replace(/최고/g, '최고\n\n')
+                .replace(/딱이에요/g, '딱이에요\n\n')
+                .replace(/소개해요!/g, '소개해요!\n\n')
+                
+                // 연속된 줄바꿈 정리
+                .replace(/\n\n\n+/g, '\n\n')
+                .trim();
+        }
+        
         function generateBlogContent(content) {
             const info = partyRoomInfo;
             
-            // 텍스트 가독성 향상을 위한 처리
-            const formattedContent = formatTextForReadability(content);
+            // 사용자 입력 텍스트를 자동으로 읽기 좋게 변환
+            const formattedContent = autoFormatText(content).replace(/\n/g, '<br>');
             
             return `
                 <h2>🌅 자연광 맛집 ${info.name} - 대전 관저동 감성 파티룸</h2><br><br>
@@ -424,6 +462,91 @@ function generateBlogContent(content) {
                 📷 인스타그램 DM: ${info.instagram}<br><br>
                 
                 지금 바로 예약하고 자연광 맛집 선셋라운지에서 잊지 못할 추억을 만들어보세요! 🌅✨
+            `;
+        }
+        
+        function generateInstagramContent(content) {
+            const info = partyRoomInfo;
+            // 인스타그램용으로도 자동 포맷팅
+            const formattedContent = autoFormatText(content).replace(/\n/g, '<br>');
+            
+            return `
+                🌅 자연광 맛집 ${info.name} 🌅<br><br>
+                
+                ${formattedContent}<br><br>
+                
+                📍 ${info.location}<br>
+                📞 ${info.phone}<br>
+                📷 ${info.instagram}<br><br>
+                
+                💰 <strong>요금 안내</strong><br>
+                평일 5만원/시간 | 주말 6만원/시간<br>
+                최소 5시간 | 청소보증금 2만원<br><br>
+                
+                ✨ 감성 인테리어 & 무드조명<br>
+                ✨ 고급 포토존 & 전신거울<br>
+                ✨ 삼각대 구비 완료!<br>
+                ✨ 마샬 스피커 & 55인치 TV<br><br>
+                
+                🎁 포토리뷰 작성시 드레스 무료 대여!<br><br>
+                
+                #선셋라운지 #자연광맛집 #대전파티룸 #관저동파티룸 #브라이덜샤워 #생일파티 #기념일 #감성인테리어 #포토존 #드레스대여 #대전관저동 #유성파티룸 #소규모모임 #세미나룸 #인스타감성
+            `;
+        }
+        
+        function generateThreadsContent(content) {
+            const info = partyRoomInfo;
+            // 쓰레드용은 짧게 + 자동 포맷팅
+            const shortContent = autoFormatText(content).substring(0, 150).replace(/\n/g, '<br>') + '...';
+            
+            return `
+                🔥 자연광 맛집 ${info.name}!<br><br>
+                
+                ${shortContent}<br><br>
+                
+                📍 ${info.location}<br>
+                📞 ${info.phone}<br><br>
+                
+                💰 평일 5만원/시간 | 주말 6만원/시간<br>
+                ✨ 포토리뷰시 드레스 무료!<br><br>
+                
+                완벽한 파티를 원한다면? 지금 바로 문의하세요! 🎊
+            `;
+        }
+        
+        function generateCarrotContent(content) {
+            const info = partyRoomInfo;
+            // 당근마켓용도 자동 포맷팅
+            const formattedContent = autoFormatText(content).replace(/\n/g, '<br>');
+            
+            return `
+                🌅 자연광 맛집 ${info.name} - 대전 관저동<br><br>
+                
+                📍 ${info.fullAddress}<br>
+                📞 ${info.phone}<br>
+                💬 ${info.kakao}<br><br>
+                
+                ${formattedContent}<br><br>
+                
+                💰 <strong>투명한 요금제</strong><br>
+                ✅ 평일: 시간당 5만원<br>
+                ✅ 주말: 시간당 6만원<br>
+                ✅ 최소 5시간 이용<br>
+                ✅ 청소보증금 2만원<br><br>
+                
+                🎯 <strong>완벽한 시설</strong><br>
+                ✅ 감성 인테리어 & 무드조명<br>
+                ✅ 고급 포토존 & 전신거울<br>
+                ✅ 삼각대 구비! 인생샷 보장<br>
+                ✅ 마샬 스피커 & 55인치 TV<br>
+                ✅ 취식 시설 완비<br><br>
+                
+                🎁 특별 혜택: 포토리뷰시 드레스 무료 대여!<br><br>
+                
+                브라이덜샤워, 생일파티, 소모임 모두 OK 🎉<br>
+                사장님 직접 운영으로 꼼꼼한 관리!<br><br>
+                
+                직거래 환영 🤝 안전거래 우선
             `;
         }
         
