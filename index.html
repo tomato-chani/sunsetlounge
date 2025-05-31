@@ -537,23 +537,29 @@ function generateBlogContent(content) {
                 return;
             }
             
-            // HTML 태그를 올바른 텍스트로 변환
+            // HTML 태그를 올바른 텍스트로 변환 (가독성 대폭 개선)
             let plainText = content
                 .replace(/<h2>/g, '')
-                .replace(/<\/h2>/g, '\n')
-                .replace(/<h3>/g, '\n')
+                .replace(/<\/h2>/g, '\n\n')
+                .replace(/<h3>/g, '\n\n')
                 .replace(/<\/h3>/g, '\n')
                 .replace(/<strong>/g, '')
                 .replace(/<\/strong>/g, '')
                 .replace(/<br><br>/g, '\n\n')
                 .replace(/<br>/g, '\n')
                 .replace(/&nbsp;/g, ' ')
-                .replace(/\s+/g, ' ')  // 여러 공백을 하나로
-                .replace(/\n\s+/g, '\n')  // 줄바꿈 후 공백 제거
+                .replace(/\. /g, '.\n\n')  // 마침표 후 빈 줄 추가
+                .replace(/! /g, '!\n\n')  // 느낌표 후 빈 줄 추가
+                .replace(/\? /g, '?\n\n') // 물음표 후 빈 줄 추가
+                .replace(/: /g, ':\n')    // 콜론 후 줄바꿈
+                .replace(/✅ /g, '\n✅ ') // 체크표시 앞에 줄바꿈
+                .replace(/• /g, '\n• ')   // 불릿 앞에 줄바꿈
+                .replace(/\n\n\n+/g, '\n\n') // 3개 이상 줄바꿈을 2개로
+                .replace(/^\n+/, '')      // 맨 앞 줄바꿈 제거
                 .trim();
             
             navigator.clipboard.writeText(plainText).then(() => {
-                alert('복사되었습니다! 이제 해당 플랫폼에 붙여넣기 하세요.');
+                alert('복사되었습니다! 이제 훨씬 읽기 편할 거예요!');
             }).catch(() => {
                 // 브라우저가 클립보드를 지원하지 않는 경우
                 const textArea = document.createElement('textarea');
