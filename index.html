@@ -537,8 +537,20 @@ function generateBlogContent(content) {
                 return;
             }
             
-            // HTML 태그 제거
-            const plainText = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+            // HTML 태그를 올바른 텍스트로 변환
+            let plainText = content
+                .replace(/<h2>/g, '')
+                .replace(/<\/h2>/g, '\n')
+                .replace(/<h3>/g, '\n')
+                .replace(/<\/h3>/g, '\n')
+                .replace(/<strong>/g, '')
+                .replace(/<\/strong>/g, '')
+                .replace(/<br><br>/g, '\n\n')
+                .replace(/<br>/g, '\n')
+                .replace(/&nbsp;/g, ' ')
+                .replace(/\s+/g, ' ')  // 여러 공백을 하나로
+                .replace(/\n\s+/g, '\n')  // 줄바꿈 후 공백 제거
+                .trim();
             
             navigator.clipboard.writeText(plainText).then(() => {
                 alert('복사되었습니다! 이제 해당 플랫폼에 붙여넣기 하세요.');
