@@ -1,4 +1,25 @@
-<!DOCTYPE html>
+function generateBlogContent(content) {
+            const info = partyRoomInfo;
+            
+            // 텍스트 가독성 향상을 위한 처리
+            const formattedContent = formatContentForBlog(content);
+            
+            return `
+                <h2>🌅 자연광 맛집 ${info.name} - 대전 관저동 감성 파티룸</h2><br><br>
+                
+                📍 <strong>정확한 주소:</strong> ${info.fullAddress}<br>
+                📞 <strong>예약문의:</strong> ${info.phone}<br>
+                💬 <strong>카카오톡:</strong> ${info.kakao}<br>
+                📷 <strong>인스타그램:</strong> ${info.instagram}<br><br>
+                
+                ${formattedContent}<br><br>
+                
+                <h3>🌟 자연광 맛집, 선셋라운지의 특별함</h3><br>
+                대전 서구 관저동에 위치한 선셋라운지는 이름처럼 아름다운 자연광이 가득한 감성 파티룸입니다.<br><br>
+                
+                화이트 톤의 깔끔한 인테리어와 넓은 창문을 통해 들어오는 자연광이 어우러져 어떤 각            {
+                title: "🎂 생일파티 완벽 패키지",
+                content: "생일 주인공을 위한 완벽한 공간! 케이크 촬영을 위한 자연광, 마샬 스피커로 생일축하송, 55인치 TV로 추억의 영상 감상까지. 삼각대로 단체사진도 완벽하게 찍고, 아늑한 바에서 축하 건배도<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -359,39 +380,45 @@
         
         function generateBlogContent(content) {
             const info = partyRoomInfo;
+            
+            // 텍스트 가독성 향상을 위한 처리
+            const formattedContent = formatTextForReadability(content);
+            
             return `
-                <h2>🌅 자연광 맛집 ${info.name} - 대전 관저동 감성 파티룸</h2><br>
+                <h2>🌅 자연광 맛집 ${info.name} - 대전 관저동 감성 파티룸</h2><br><br>
                 
                 📍 <strong>정확한 주소:</strong> ${info.fullAddress}<br>
                 📞 <strong>예약문의:</strong> ${info.phone}<br>
                 💬 <strong>카카오톡:</strong> ${info.kakao}<br>
                 📷 <strong>인스타그램:</strong> ${info.instagram}<br><br>
                 
-                ${content}<br><br>
+                ${formattedContent}<br><br>
                 
-                <h3>🌟 자연광 맛집, 선셋라운지의 특별함</h3>
-                대전 서구 관저동에 위치한 선셋라운지는 이름처럼 아름다운 자연광이 가득한 감성 파티룸입니다. 화이트 톤의 깔끔한 인테리어와 넓은 창문을 통해 들어오는 자연광이 어우러져 어떤 각도에서 찍어도 완벽한 사진을 만들어냅니다.<br><br>
+                <h3>🌟 자연광 맛집, 선셋라운지의 특별함</h3><br>
+                대전 서구 관저동에 위치한 선셋라운지는 이름처럼 아름다운 자연광이 가득한 감성 파티룸입니다.<br><br>
                 
-                <h3>💰 투명한 요금 시스템</h3>
+                화이트 톤의 깔끔한 인테리어와 넓은 창문을 통해 들어오는 자연광이 어우러져 어떤 각도에서 찍어도 완벽한 사진을 만들어냅니다.<br><br>
+                
+                <h3>💰 투명한 요금 시스템</h3><br>
                 • 평일: 시간당 50,000원<br>
                 • 주말: 시간당 60,000원<br>
                 • 최소 이용시간: 5시간<br>
                 • 청소보증금: 20,000원 (예약 확정시 입금)<br><br>
                 
-                <h3>🏢 프리미엄 시설과 서비스</h3>
+                <h3>🏢 프리미엄 시설과 서비스</h3><br>
                 ✅ 감성 인테리어 & 무드 조명<br>
                 ✅ 고급 포토존 & 전신거울<br>
                 ✅ 삼각대 구비 완료!<br>
                 ✅ 마샬 스피커 & 55인치 TV<br>
                 ✅ 아늑한 바 공간 (와인잔 제공)<br>
-                ✅ 완벽한 취식 시설 (커피머신, 정수기, 냉장고)<br>
+                ✅ 완벽한 취식 시설 (정수기, 대용량 냉장고, 전자레인지, 얼음 제공)<br>
                 ✅ 드레스 대여 서비스<br>
                 ✅ 무료주차 가능<br><br>
                 
-                <h3>🎁 특별 이벤트</h3>
+                <h3>🎁 특별 이벤트</h3><br>
                 ✨ 포토리뷰 작성시 드레스 무료 대여! ✨<br><br>
                 
-                <h3>📅 예약 및 문의</h3>
+                <h3>📅 예약 및 문의</h3><br>
                 📞 전화 예약: ${info.phone}<br>
                 💬 네이버 플레이스 톡톡: 네이버에서 "선셋라운지" 검색<br>
                 📷 인스타그램 DM: ${info.instagram}<br><br>
@@ -402,10 +429,12 @@
         
         function generateInstagramContent(content) {
             const info = partyRoomInfo;
+            const formattedContent = formatTextForSNS(content);
+            
             return `
                 🌅 자연광 맛집 ${info.name} 🌅<br><br>
                 
-                ${content}<br><br>
+                ${formattedContent}<br><br>
                 
                 📍 ${info.location}<br>
                 📞 ${info.phone}<br>
@@ -428,10 +457,12 @@
         
         function generateThreadsContent(content) {
             const info = partyRoomInfo;
+            const shortContent = content.length > 80 ? content.substring(0, 80) + '...' : content;
+            
             return `
                 🔥 자연광 맛집 ${info.name}!<br><br>
                 
-                ${content.length > 100 ? content.substring(0, 100) + '...' : content}<br><br>
+                ${shortContent}<br><br>
                 
                 📍 ${info.location}<br>
                 📞 ${info.phone}<br><br>
@@ -445,6 +476,8 @@
         
         function generateCarrotContent(content) {
             const info = partyRoomInfo;
+            const formattedContent = formatTextForSNS(content);
+            
             return `
                 🌅 자연광 맛집 ${info.name} - 대전 관저동<br><br>
                 
@@ -452,7 +485,7 @@
                 📞 ${info.phone}<br>
                 💬 ${info.kakao}<br><br>
                 
-                ${content}<br><br>
+                ${formattedContent}<br><br>
                 
                 💰 <strong>투명한 요금제</strong><br>
                 ✅ 평일: 시간당 5만원<br>
@@ -474,6 +507,27 @@
                 
                 직거래 환영 🤝 안전거래 우선
             `;
+        }
+        
+        // 텍스트 가독성 향상 함수
+        function formatTextForReadability(text) {
+            return text
+                .split('.')
+                .map(sentence => sentence.trim())
+                .filter(sentence => sentence.length > 0)
+                .map(sentence => sentence.endsWith('.') ? sentence : sentence + '.')
+                .join('<br><br>');
+        }
+        
+        // SNS용 텍스트 포맷팅 함수  
+        function formatTextForSNS(text) {
+            return text
+                .split('.')
+                .map(sentence => sentence.trim())
+                .filter(sentence => sentence.length > 0)
+                .slice(0, 3) // SNS는 처음 3문장만
+                .map(sentence => sentence.endsWith('.') ? sentence : sentence + '.')
+                .join('<br><br>');
         }
         
         function copyContent(platform) {
