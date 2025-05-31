@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선셋라운지 마케팅 자동화</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .topic-item {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .topic-item:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .topic-item.selected {
+            border-color: #667eea;
+            background: #e8f2ff;
+        }
+        
+        .topic-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .topic-content {
+            color: #495057;
+            line-height: 1.5;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .platform-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .platform-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .generated-content {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌅 선셋라운지 마케팅 자동화</h1>
+            <p>하나의 글로 모든 플랫폼에 최적화된 콘텐츠를 자동 생성하세요</p>
+        </div>
+        
+        <div class="section">
+            <h3>🎲 글감 추천받기</h3>
+            <button onclick="generateTopics()">글감 5개 랜덤 생성하기</button>
+            
+            <div id="topicSuggestions" class="hidden">
+                <h4>💡 추천 글감 (클릭해서 선택)</h4>
+                <div id="topicList"></div>
+            </div>
+            
+            <h4 style="margin-top: 20px;">선택된 홍보 내용</h4>
+            <textarea id="baseContent" placeholder="위의 글감을 선택하거나 직접 작성해주세요."></textarea>
+            
+            <button onclick="generateContent()">
+                <span id="generateText">🚀 플랫폼별 콘텐츠 생성하기</span>
+                <span id="generateLoading" class="loading hidden"></span>
+            </button>
+        </div>
+        
+        <div id="results" class="results hidden">
+            <div class="platform-card">
+                <div class="platform-title">📝 블로그</div>
+                <div id="blogContent" class="generated-content"></div>
+                <button class="copy-btn" onclick="copyContent('blog')">복사하기</button>
+            </div>
+            
+            <div class="platform-card">
+                <div class="platform-title">📷 인스타그램</div>
+                <div id="instagramContent" class="generated-content"></div>
+                <button class="copy-btn" onclick="copyContent('instagram')">복사하기</button>
+            </div>
+            
+            <div class="platform-card">
+                <div class="platform-title">🧵 쓰레드</div>
+                <div id="threadsContent" class="generated-content"></div>
+                <button class="copy-btn" onclick="copyContent('threads')">복사하기</button>
+            </div>
+            
+            <div class="platform-card">
+                <div class="platform-title">🥕 당근마켓</div>
+                <div id="carrotContent" class="generated-content"></div>
+                <button class="copy-btn" onclick="copyContent('carrot')">복사하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 선셋라운지 정보
+        const partyRoomInfo = {
+            name: "선셋라운지",
+            fullAddress: "대전광역시 서구 관저북로13번길 24-5 더존빌딩 2층 202-1호",
+            location: "대전 서구 관저동 (유성에서도 가까워요!)",
+            phone: "0507-1373-3286",
+            kakao: "네이버 플레이스 톡톡",
+            instagram: "@sunset_lounge_daejeon"
+        };
+        
+        // 글감 데이터베이스
+        const topicDatabase = [
+            {
+                title: "🌅 자연광 맛집 선셋라운지 신규 오픈",
+                content: "자연광이 아름답게 들어오는 선셋라운지가 새롭게 문을 열었습니다! 브라이덜샤워부터 소규모 모임까지 완벽한 공간으로, 성인 10명까지 추가비용 없이 이용 가능합니다. 감성 인테리어와 무드조명으로 어떤 컨셉이든 완벽하게 연출할 수 있어요."
+            },
+            {
+                title: "🍷 아늑한 바와 함께하는 브라이덜샤워",
+                content: "예비신부를 위한 완벽한 브라이덜샤워 공간! 아늑한 바에서 와인잔과 함께 특별한 시간을 보내세요. 드레스 대여도 가능하고, 포토후기 작성시 드레스 무료 대여 혜택까지! 화이트 플라워 아치와 'Bridal Shower' 레터링으로 완벽한 포토존이 준비되어 있습니다."
+            },
+            {
+                title: "☕ 취식 자유! 커피머신과 정수기 완비",
+                content: "자유로운 취식이 가능한 선셋라운지! 커피포트, 커피머신, 정수기, 냉장고까지 모든 편의시설이 준비되어 있어 편리하게 이용하실 수 있습니다. 간단한 요리부터 케이크 파티까지 자유자재로 즐기세요."
+            },
+            {
+                title: "📸 삼각대 구비! 인스타 감성 촬영 완벽 지원",
+                content: "자연광이 아름다운 공간에서 인스타 감성 사진을 남겨보세요! 삼각대가 구비되어 있어 셀카봉 없이도 완벽한 단체사진 촬영이 가능합니다. 고급 포토존과 전신거울로 어디서 찍어도 인생샷이 보장됩니다."
+            },
+            {
+                title: "👥 2~20인 소규모 모임 최적 공간",
+                content: "친목모임, 세미나, 소규모 회사 모임에 딱 맞는 공간! 성인 10명까지 추가비용 없이 이용 가능하고, 평일 모든 시간대 이용이 가능합니다. 최소 5시간부터 자유롭게 이용하세요."
+            },
+            {
+                title: "🚗 무료주차 완벽! 접근성 최고의 관저동 위치",
+                content: "대전 관저동 최고의 접근성! 무료주차가 가능해서 멀리서 오시는 분들도 부담 없이 이용하실 수 있습니다. 유성 지역에서도 가깝고, 대중교통과 자가용 모두 편리한 위치입니다."
+            },
+            {
+                title: "🎵 마샬 스피커 & 55인치 TV로 완벽한 파티",
+                content: "최고급 마샬 스피커로 음질 걱정 끝! 55인치 대형 TV로 영상 시청이나 프레젠테이션도 완벽합니다. 생일축하송부터 댄스음악까지, 어떤 장르든 완벽한 사운드로 즐기세요."
+            },
+            {
+                title: "💰 투명한 요금제! 평일 5만원 주말 6만원",
+                content: "명확하고 투명한 요금제로 부담 없이 이용하세요! 평일 시간당 5만원, 주말 시간당 6만원으로 최소 5시간부터 이용 가능합니다. 청소보증금 2만원으로 예약 확정되며, 추가비용은 전혀 없습니다."
+            },
+            {
+                title: "👗 드레스 대여 가능! 포토후기시 무료 혜택",
+                content: "특별한 날을 위한 드레스 대여 서비스! 포토후기를 작성해주시면 드레스를 무료로 대여해드립니다. 자연광이 아름다운 공간에서 드레스를 입고 찍는 사진은 정말 환상적이에요."
+            },
+            {
+                title: "🎂 생일파티 완벽 패키지",
+                content: "생일 주인공을 위한 완벽한 공간! 케이크 촬영을 위한 자연광, 마샬 스피커로 생일축하송, 55인치 TV로 추억의 영상 감상까지. 삼각대로 단체사진도 완벽하게 찍고, 아늑한 바에서 축하 건배도 즐기세요."
+            }
+        ];
+        
+        // 플랫폼별 콘텐츠 저장
+        let generatedContents = {};
+        
+        function generateTopics() {
+            // 랜덤으로 5개 선택
+            const shuffled = [...topicDatabase].sort(() => 0.5 - Math.random());
+            const selectedTopics = shuffled.slice(0, 5);
+            
+            const topicList = document.getElementById('topicList');
+            topicList.innerHTML = '';
+            
+            selectedTopics.forEach((topic) => {
+                const topicItem = document.createElement('div');
+                topicItem.className = 'topic-item';
+                topicItem.onclick = () => selectTopic(topic, topicItem);
+                
+                topicItem.innerHTML = `
+                    <div class="topic-title">${topic.title}</div>
+                    <div class="topic-content">${topic.content}</div>
+                `;
+                
+                topicList.appendChild(topicItem);
+            });
+            
+            document.getElementById('topicSuggestions').classList.remove('hidden');
+        }
+        
+        function selectTopic(topic, element) {
+            // 다른 선택된 아이템들 선택 해제
+            document.querySelectorAll('.topic-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // 현재 아이템 선택
+            element.classList.add('selected');
+            
+            // 내용을 textarea에 입력
+            document.getElementById('baseContent').value = topic.content;
+        }
+        
+        function generateContent() {
+            const baseContent = document.getElementById('baseContent').value;
+            
+            if (!baseContent.trim()) {
+                alert('홍보 내용을 입력해주세요.');
+                return;
+            }
+            
+            // 로딩 상태 표시
+            document.getElementById('generateText').classList.add('hidden');
+            document.getElementById('generateLoading').classList.remove('hidden');
+            
+            setTimeout(() => {
+                // 각 플랫폼별 콘텐츠 생성
+                generatedContents.blog = generateBlogContent(baseContent);
+                generatedContents.instagram = generateInstagramContent(baseContent);
+                generatedContents.threads = generateThreadsContent(baseContent);
+                generatedContents.carrot = generateCarrotContent(baseContent);
+                
+                // 결과 표시
+                document.getElementById('blogContent').innerHTML = generatedContents.blog;
+                document.getElementById('instagramContent').innerHTML = generatedContents.instagram;
+                document.getElementById('threadsContent').innerHTML = generatedContents.threads;
+                document.getElementById('carrotContent').innerHTML = generatedContents.carrot;
+                
+                document.getElementById('results').classList.remove('hidden');
+                
+                // 로딩 상태 해제
+                document.getElementById('generateText').classList.remove('hidden');
+                document.getElementById('generateLoading').classList.add('hidden');
+                
+                // 결과로 스크롤
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            }, 1500);
+        }
+        
+        function generateBlogContent(content) {
+            const info = partyRoomInfo;
+            return `
+                <h2>🌅 자연광 맛집 ${info.name} - 대전 관저동 감성 파티룸</h2><br>
+                
+                📍 <strong>정확한 주소:</strong> ${info.fullAddress}<br>
+                📞 <strong>예약문의:</strong> ${info.phone}<br>
+                💬 <strong>카카오톡:</strong> ${info.kakao}<br>
+                📷 <strong>인스타그램:</strong> ${info.instagram}<br><br>
+                
+                ${content}<br><br>
+                
+                <h3>🌟 자연광 맛집, 선셋라운지의 특별함</h3>
+                대전 서구 관저동에 위치한 선셋라운지는 이름처럼 아름다운 자연광이 가득한 감성 파티룸입니다. 화이트 톤의 깔끔한 인테리어와 넓은 창문을 통해 들어오는 자연광이 어우러져 어떤 각도에서 찍어도 완벽한 사진을 만들어냅니다.<br><br>
+                
+                <h3>💰 투명한 요금 시스템</h3>
+                • 평일: 시간당 50,000원<br>
+                • 주말: 시간당 60,000원<br>
+                • 최소 이용시간: 5시간<br>
+                • 청소보증금: 20,000원 (예약 확정시 입금)<br><br>
+                
+                <h3>🏢 프리미엄 시설과 서비스</h3>
+                ✅ 감성 인테리어 & 무드 조명<br>
+                ✅ 고급 포토존 & 전신거울<br>
+                ✅ 삼각대 구비 완료!<br>
+                ✅ 마샬 스피커 & 55인치 TV<br>
+                ✅ 아늑한 바 공간 (와인잔 제공)<br>
+                ✅ 완벽한 취식 시설 (커피머신, 정수기, 냉장고)<br>
+                ✅ 드레스 대여 서비스<br>
+                ✅ 무료주차 가능<br><br>
+                
+                <h3>🎁 특별 이벤트</h3>
+                ✨ 포토리뷰 작성시 드레스 무료 대여! ✨<br><br>
+                
+                <h3>📅 예약 및 문의</h3>
+                📞 전화 예약: ${info.phone}<br>
+                💬 네이버 플레이스 톡톡: 네이버에서 "선셋라운지" 검색<br>
+                📷 인스타그램 DM: ${info.instagram}<br><br>
+                
+                지금 바로 예약하고 자연광 맛집 선셋라운지에서 잊지 못할 추억을 만들어보세요! 🌅✨
+            `;
+        }
+        
+        function generateInstagramContent(content) {
+            const info = partyRoomInfo;
+            return `
+                🌅 자연광 맛집 ${info.name} 🌅<br><br>
+                
+                ${content}<br><br>
+                
+                📍 ${info.location}<br>
+                📞 ${info.phone}<br>
+                📷 ${info.instagram}<br><br>
+                
+                💰 <strong>요금 안내</strong><br>
+                평일 5만원/시간 | 주말 6만원/시간<br>
+                최소 5시간 | 청소보증금 2만원<br><br>
+                
+                ✨ 감성 인테리어 & 무드조명<br>
+                ✨ 고급 포토존 & 전신거울<br>
+                ✨ 삼각대 구비 완료!<br>
+                ✨ 마샬 스피커 & 55인치 TV<br><br>
+                
+                🎁 포토리뷰 작성시 드레스 무료 대여!<br><br>
+                
+                #선셋라운지 #자연광맛집 #대전파티룸 #관저동파티룸 #브라이덜샤워 #생일파티 #기념일 #감성인테리어 #포토존 #드레스대여 #대전관저동 #유성파티룸 #소규모모임 #세미나룸 #인스타감성
+            `;
+        }
+        
+        function generateThreadsContent(content) {
+            const info = partyRoomInfo;
+            return `
+                🔥 자연광 맛집 ${info.name}!<br><br>
+                
+                ${content.length > 100 ? content.substring(0, 100) + '...' : content}<br><br>
+                
+                📍 ${info.location}<br>
+                📞 ${info.phone}<br><br>
+                
+                💰 평일 5만원/시간 | 주말 6만원/시간<br>
+                ✨ 포토리뷰시 드레스 무료!<br><br>
+                
+                완벽한 파티를 원한다면? 지금 바로 문의하세요! 🎊
+            `;
+        }
+        
+        function generateCarrotContent(content) {
+            const info = partyRoomInfo;
+            return `
+                🌅 자연광 맛집 ${info.name} - 대전 관저동<br><br>
+                
+                📍 ${info.fullAddress}<br>
+                📞 ${info.phone}<br>
+                💬 ${info.kakao}<br><br>
+                
+                ${content}<br><br>
+                
+                💰 <strong>투명한 요금제</strong><br>
+                ✅ 평일: 시간당 5만원<br>
+                ✅ 주말: 시간당 6만원<br>
+                ✅ 최소 5시간 이용<br>
+                ✅ 청소보증금 2만원<br><br>
+                
+                🎯 <strong>완벽한 시설</strong><br>
+                ✅ 감성 인테리어 & 무드조명<br>
+                ✅ 고급 포토존 & 전신거울<br>
+                ✅ 삼각대 구비! 인생샷 보장<br>
+                ✅ 마샬 스피커 & 55인치 TV<br>
+                ✅ 취식 시설 완비<br><br>
+                
+                🎁 특별 혜택: 포토리뷰시 드레스 무료 대여!<br><br>
+                
+                브라이덜샤워, 생일파티, 소모임 모두 OK 🎉<br>
+                사장님 직접 운영으로 꼼꼼한 관리!<br><br>
+                
+                직거래 환영 🤝 안전거래 우선
+            `;
+        }
+        
+        function copyContent(platform) {
+            const content = generatedContents[platform];
+            if (!content) {
+                alert('생성된 콘텐츠가 없습니다.');
+                return;
+            }
+            
+            // HTML 태그 제거
+            const plainText = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ');
+            
+            navigator.clipboard.writeText(plainText).then(() => {
+                alert('복사되었습니다! 이제 해당 플랫폼에 붙여넣기 하세요.');
+            }).catch(() => {
+                // 브라우저가 클립보드를 지원하지 않는 경우
+                const textArea = document.createElement('textarea');
+                textArea.value = plainText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('복사되었습니다!');
+            });
+        }
+    </script>
+</body>
+</html>
