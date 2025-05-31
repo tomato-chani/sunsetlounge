@@ -512,22 +512,31 @@ function generateBlogContent(content) {
         // 텍스트 가독성 향상 함수
         function formatTextForReadability(text) {
             return text
-                .split('.')
-                .map(sentence => sentence.trim())
-                .filter(sentence => sentence.length > 0)
-                .map(sentence => sentence.endsWith('.') ? sentence : sentence + '.')
-                .join('<br><br>');
+                .replace(/\. /g, '.<br><br>')      // 마침표 후 빈 줄
+                .replace(/! /g, '!<br><br>')       // 느낌표 후 빈 줄
+                .replace(/\? /g, '?<br><br>')      // 물음표 후 빈 줄
+                .replace(/🎈/g, '<br><br>🎈')      // 이모지 앞 빈 줄
+                .replace(/🍽/g, '<br><br>🍽')      // 이모지 앞 빈 줄
+                .replace(/👗/g, '<br><br>👗')      // 이모지 앞 빈 줄
+                .replace(/💛/g, '💛<br><br>')      // 이모지 뒤 빈 줄
+                .replace(/🌇/g, '🌇<br><br>')      // 이모지 뒤 빈 줄
+                .replace(/완비!/g, '완비!<br><br>') // 강조 후 빈 줄
+                .replace(/최고/g, '최고<br><br>')   // 강조 후 빈 줄
+                .replace(/진행 중!/g, '진행 중!<br><br>'); // 강조 후 빈 줄
         }
         
         // SNS용 텍스트 포맷팅 함수  
         function formatTextForSNS(text) {
             return text
-                .split('.')
-                .map(sentence => sentence.trim())
-                .filter(sentence => sentence.length > 0)
-                .slice(0, 3) // SNS는 처음 3문장만
-                .map(sentence => sentence.endsWith('.') ? sentence : sentence + '.')
-                .join('<br><br>');
+                .replace(/\. /g, '.<br><br>')      // 마침표 후 빈 줄
+                .replace(/! /g, '!<br><br>')       // 느낌표 후 빈 줄
+                .replace(/\? /g, '?<br><br>')      // 물음표 후 빈 줄
+                .replace(/🎈/g, '<br><br>🎈')      // 이모지 앞 빈 줄
+                .replace(/🍽/g, '<br><br>🍽')      // 이모지 앞 빈 줄
+                .replace(/👗/g, '<br><br>👗')      // 이모지 앞 빈 줄
+                .replace(/💛/g, '💛<br><br>')      // 이모지 뒤 빈 줄
+                .replace(/🌇/g, '🌇<br><br>')      // 이모지 뒤 빈 줄
+                .slice(0, 300) + '...'; // SNS는 300자로 제한
         }
         
         function copyContent(platform) {
